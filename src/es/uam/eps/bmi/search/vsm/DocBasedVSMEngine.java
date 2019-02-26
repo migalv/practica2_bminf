@@ -31,16 +31,47 @@ public class DocBasedVSMEngine extends AbstractVSMEngine {
         String queryTerms[] = parse(query);
         int numDocs = index.numDocs();
         RankingImpl ranking = new RankingImpl(index, cutoff);
+        List<PostingsList> postingsLists;
+        List<Integer> docIDs;
+        
         // Lista de las listas de postings de cada termino de la query
-        List<PostingsList> postingsLists = new ArrayList<>();
+        postingsLists = new ArrayList<>();
+       
+        //Guardaremos el ID de todos los docs
+        docIDs= new ArrayList<>();
+        
         // Heap de postings ordenados de menor a mayor por docID (tantos como terminos de la query)
         PriorityQueue<Posting> postingsHeap = new PriorityQueue(queryTerms.length);
         
+        long termFreq=0;
+        
         // Recuperamos la listas de postings para cada termino de la query
         for(String queryTerm : queryTerms){
-            postingsLists.add(index.getPostings(queryTerm));
+            termFreq= index.getDocFreq(queryTerm);
+            PostingsList termPostingList=index.getPostings(queryTerm);
+            //PostingsListIterator postingIterator = (PostingsListIterator)index.getPostings(queryTerm).iterator();
+            
+            //Añadimos todos los ID de los docs en una lista por cada term
+            for(Posting docIDPosting : termPostingList){
+                int docID= docIDPosting.getDocID();
+                if(!docIDs.contains(docID)){
+                    docIDs.add(docID);
+                }
+            }
+            
+            //Solo añadimos si esta presente en el indice
+            if(termFreq > 0){
+                postingsLists.add(termPostingList);
+            }
         }
         
+        while(postingsLists.isEmpty() == false){
+            
+        }
+        
+        
+        
+        return ranking;
         
     }
     
