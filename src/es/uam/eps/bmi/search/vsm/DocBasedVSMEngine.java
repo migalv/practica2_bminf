@@ -13,6 +13,7 @@ import es.uam.eps.bmi.search.ranking.SearchRanking;
 import es.uam.eps.bmi.search.ranking.impl.RankingImpl;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.PriorityQueue;
 
@@ -49,7 +50,7 @@ public class DocBasedVSMEngine extends AbstractVSMEngine {
         for(String queryTerm : queryTerms){
             termFreq= index.getDocFreq(queryTerm);
             PostingsList termPostingList=index.getPostings(queryTerm);
-            //PostingsListIterator postingIterator = (PostingsListIterator)index.getPostings(queryTerm).iterator();
+            Iterator<Posting> postingIterator = index.getPostings(queryTerm).iterator();
             
             //Añadimos todos los ID de los docs en una lista por cada term
             for(Posting docIDPosting : termPostingList){
