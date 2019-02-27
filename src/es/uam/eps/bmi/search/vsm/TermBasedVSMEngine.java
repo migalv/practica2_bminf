@@ -1,6 +1,5 @@
 package es.uam.eps.bmi.search.vsm;
 
-import es.uam.eps.bmi.search.AbstractEngine;
 import es.uam.eps.bmi.search.index.Index;
 import es.uam.eps.bmi.search.index.structure.Posting;
 import es.uam.eps.bmi.search.index.structure.PostingsList;
