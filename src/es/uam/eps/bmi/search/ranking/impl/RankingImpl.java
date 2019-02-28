@@ -40,7 +40,15 @@ public class RankingImpl implements SearchRanking{
     }
     
     public void add(int docID, double score){
-        ranking.add(new RankingImplDoc(docID, score, index));
+        SearchRankingDoc srd= ranking.peek();
+        
+        if(srd == null){
+            ranking.add(new RankingImplDoc(docID, score, index));
+        }else if(score > srd.getScore()){
+            ranking.poll();
+            ranking.add(new RankingImplDoc(docID, score, index));
+        }
+        
     }
     
 }
