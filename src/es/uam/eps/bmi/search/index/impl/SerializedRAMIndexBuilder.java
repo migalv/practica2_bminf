@@ -7,13 +7,10 @@ package es.uam.eps.bmi.search.index.impl;
 
 import es.uam.eps.bmi.search.index.AbstractIndexBuilder;
 import es.uam.eps.bmi.search.index.Index;
-import es.uam.eps.bmi.search.index.structure.Posting;
-import es.uam.eps.bmi.search.index.structure.PostingsList;
+import es.uam.eps.bmi.search.index.structure.impl.PostingsListImpl;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,8 +19,10 @@ import java.util.Map;
  */
 public class SerializedRAMIndexBuilder extends AbstractIndexBuilder{
 
-    long numDocs = 0;
-    Map<String, List<Posting>> diccionario = new HashMap<>();
+    int numDocs = 0;
+    Map<String, PostingsListImpl> dictionary = new HashMap<>();
+    String indexPath;
+    SerializedRAMIndex index;
     
     @Override
     protected void indexText(String text, String path) throws IOException {        
@@ -32,28 +31,42 @@ public class SerializedRAMIndexBuilder extends AbstractIndexBuilder{
         
         // Contamos un nuevo documento
         numDocs++;
+        // Añadimos su path
+        index.addDocPath(path);
         
         terms = text.toLowerCase().split("\\P{Alpha}+");
         
         // Por cada termino lo añadimos al diccionario y vamos contando cada vez que aparece
         for(String term : terms){
-            if(diccionario.containsKey(term)){
-                diccionario.replace(term, diccionario.get(term));
-            }else{
-                diccionario.put(term, new ArrayList().add(new Posting(numDocs - 1, 1)));
+            // El termino ya existe en el diccionario
+            if(dictionary.containsKey(term)){
+                // Recuperamos su lista de postings
+                PostingsListImpl pli = dictionary.get(term);
+                // Añadimos el posting a la lista
+                pli.addPosting(numDocs - 1);
+            }else{ // Es la primera vez que aparece el termino en el diccionario
+                // Creamos una lista de postings
+                PostingsListImpl pli = new PostingsListImpl();
+                // Le añadimos un posting para este documento
+                pli.addPosting(numDocs - 1);
+                // Añadimos el termino en el diccionario
+                dictionary.put(term, pli);
             }
         }
     }
 
     @Override
     protected Index getCoreIndex() throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return index;
     }
 
     @Override
     public void build(String collectionPath, String indexPath) throws IOException {
+        this.indexPath = indexPath;
         clear(indexPath);
         numDocs = 0;
+        
+        index = new SerializedRAMIndex(indexPath);
         
         // Abrimos el fichero que nos pasan como coleccion
         File f = new File(collectionPath);
@@ -67,10 +80,11 @@ public class SerializedRAMIndexBuilder extends AbstractIndexBuilder{
         // Si es un archivo, lo abrimos y leemos las urls
         else indexURLs(f);
         
+        index.saveDictionary(dictionary);
+        index.setNumDocs(numDocs);
+        
         saveDocNorms(indexPath);
         
-        return;
     }
-
 
 }

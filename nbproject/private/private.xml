@@ -3,14 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/migal/workspace/BMINF/practica2/src/es/uam/eps/bmi/search/index/AbstractIndexBuilder.java</file>
-            <file>file:/D:/migal/workspace/BMINF/practica2/src/es/uam/eps/bmi/search/index/structure/Posting.java</file>
             <file>file:/D:/migal/workspace/BMINF/practica2/src/es/uam/eps/bmi/search/index/impl/SerializedRAMIndex.java</file>
             <file>file:/D:/migal/workspace/BMINF/practica2/src/es/uam/eps/bmi/search/index/Config.java</file>
-            <file>file:/D:/migal/workspace/BMINF/practica2/src/es/uam/eps/bmi/search/AbstractEngine.java</file>
             <file>file:/D:/migal/workspace/BMINF/practica2/src/es/uam/eps/bmi/search/test/TestEngine.java</file>
-            <file>file:/D:/migal/workspace/BMINF/practica2/src/es/uam/eps/bmi/search/vsm/TermBasedVSMEngine.java</file>
+            <file>file:/D:/migal/workspace/BMINF/practica2/src/es/uam/eps/bmi/search/index/lucene/LuceneBuilder.java</file>
             <file>file:/D:/migal/workspace/BMINF/practica2/src/es/uam/eps/bmi/search/index/impl/SerializedRAMIndexBuilder.java</file>
+            <file>file:/D:/migal/workspace/BMINF/practica2/src/es/uam/eps/bmi/search/index/lucene/LuceneIndex.java</file>
         </group>
     </open-files>
 </project-private>
