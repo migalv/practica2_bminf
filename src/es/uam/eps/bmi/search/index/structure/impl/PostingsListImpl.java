@@ -7,6 +7,7 @@ package es.uam.eps.bmi.search.index.structure.impl;
 
 import es.uam.eps.bmi.search.index.structure.Posting;
 import es.uam.eps.bmi.search.index.structure.PostingsList;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.TreeMap;
  *
  * @author migal
  */
-public class PostingsListImpl implements PostingsList {
+public class PostingsListImpl implements PostingsList, Serializable {
     
     // Cada tupla es un posting.
     private final List<Posting> postings;

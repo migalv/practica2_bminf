@@ -7,6 +7,7 @@ package es.uam.eps.bmi.search.index.impl;
 
 import es.uam.eps.bmi.search.index.AbstractIndexBuilder;
 import es.uam.eps.bmi.search.index.Index;
+import es.uam.eps.bmi.search.index.NoIndexException;
 import es.uam.eps.bmi.search.index.structure.impl.PostingsListImpl;
 import java.io.File;
 import java.io.IOException;
@@ -62,11 +63,16 @@ public class SerializedRAMIndexBuilder extends AbstractIndexBuilder{
 
     @Override
     public void build(String collectionPath, String indexPath) throws IOException {
+        if (indexPath == null || indexPath.equals("")) {
+            throw new NoIndexException("Ruta esta vacia");
+        }
         this.indexPath = indexPath;
         clear(indexPath);
         numDocs = 0;
         
-        index = new SerializedRAMIndex(indexPath);
+        index = new SerializedRAMIndex();
+        index.docPath();
+
         
         // Abrimos el fichero que nos pasan como coleccion
         File f = new File(collectionPath);
@@ -80,7 +86,7 @@ public class SerializedRAMIndexBuilder extends AbstractIndexBuilder{
         // Si es un archivo, lo abrimos y leemos las urls
         else indexURLs(f);
         
-        index.saveDictionary(dictionary);
+        index.saveDictionary(dictionary,indexPath);
         index.setNumDocs(numDocs);
         
         saveDocNorms(indexPath);

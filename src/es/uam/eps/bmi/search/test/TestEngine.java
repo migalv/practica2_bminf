@@ -134,7 +134,7 @@ public class TestEngine {
         System.out.println("\tLuceneForwardIndex:\t" + diskSpace(baseIndexPath + "/lucene/forward") + "K");
         System.out.println("\tLuceneIndex:\t" + diskSpace(baseIndexPath + "/lucene") + "K");
         System.out.println("\tRAMIndex:\t" + diskSpace(baseIndexPath + "/ram") + "K");
-        System.out.println("\tDiskIndex:\t" + diskSpace(baseIndexPath + "/disk") + "K");
+//        System.out.println("\tDiskIndex:\t" + diskSpace(baseIndexPath + "/disk") + "K");
     }
     
     static void testSearchPerformance(String collName, String baseIndexPath, String query, int cutoff) throws IOException {
