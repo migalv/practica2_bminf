@@ -26,7 +26,7 @@ public class RankingImpl implements SearchRanking{
         this.index = index;
         this.cutoff = cutoff;
         // Heap inverso, queremos la lista de mayor score a menor
-        ranking = new PriorityQueue(cutoff);
+        ranking = new PriorityQueue(cutoff,Collections.reverseOrder());
     }
         
     @Override
@@ -50,6 +50,8 @@ public class RankingImpl implements SearchRanking{
         }else if(ranking.size() < this.cutoff){
             ranking.add(new RankingImplDoc(docID, score, index));
         }
+        
+        
         
     }
         

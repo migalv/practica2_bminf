@@ -37,7 +37,7 @@ public class SerializedRAMIndex extends AbstractIndex implements Serializable{
     String indexPath;
 
     public SerializedRAMIndex(String indexPath) throws NoIndexException, IOException {
-        if (indexPath == null || indexPath.equals("")) {
+        if (indexPath.equals("") || (new File(indexPath).exists() == false)  || indexPath == null){
             throw new NoIndexException("Ruta esta vacia");
         }
         this.loadIndex(indexPath);
