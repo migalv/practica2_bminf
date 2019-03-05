@@ -12,7 +12,7 @@ import java.util.Iterator;
  *
  * @author e340875
  */
-public class HeapPosting implements Comparable{
+public class HeapPosting implements Comparable<HeapPosting>{
     private final Posting pl;
     private final Iterator<Posting> ip;
     private final String queryTerm;
@@ -34,7 +34,8 @@ public class HeapPosting implements Comparable{
     }
 
     @Override
-    public int compareTo(Object o) {
-       return this.pl.compareTo((Posting)o);
+    public int compareTo(HeapPosting o) {
+       return this.pl.compareTo(o.pl);
     }
+
 }
