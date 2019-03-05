@@ -29,6 +29,8 @@ public class TermBasedVSMEngine extends AbstractVSMEngine {
         String queryTerms[] = parse(query);
         int numDocs = index.numDocs();
         RankingImpl ranking = new RankingImpl(index, cutoff);
+        RankingImpl finalRanking = new RankingImpl(index, cutoff);
+
         
         for(String queryTerm : queryTerms){
             PostingsList postings = index.getPostings(queryTerm);

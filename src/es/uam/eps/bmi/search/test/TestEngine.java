@@ -63,8 +63,8 @@ public class TestEngine {
         /////////////////////////////////////
         
         testIndexPerformance("1k", "collections/docs1k.zip", "index/1k");
-        //testIndexPerformance("10k", "collections/docs10k.zip", "index/10k");
-        //testIndexPerformance("100k", "collections/docs100k.zip", "index/100k");
+        testIndexPerformance("10k", "collections/docs10k.zip", "index/10k");
+        testIndexPerformance("100k", "collections/docs100k.zip", "index/100k");
 
         /////////////////////////////////////
         // Búsqueda: pruebas de corrección //
@@ -94,8 +94,8 @@ public class TestEngine {
         //////////////////////////////////////
 
         testSearchPerformance("1k", "index/1k", "obama family tree", 5);
-//        testSearchPerformance("10k", "index/10k", "air tavel information", 5);
-    //    testSearchPerformance("100k", "index/100k", "living in india", 5);
+        testSearchPerformance("10k", "index/10k", "air tavel information", 5);
+        testSearchPerformance("100k", "index/100k", "living in india", 5);
     }
     
     static void testIndex(Index index, String word) throws IOException {
