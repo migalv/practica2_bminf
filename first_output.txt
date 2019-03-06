@@ -1,0 +1,133 @@
+No index in here
+-----------------------
+Checking index correction on URL collection
+  LuceneForwardIndex
+	Word "information" occurs in 3 documents: 0 (33) 1 (204) 3 (7) 
+  LuceneIndex
+	Word "information" occurs in 3 documents: 0 (33) 1 (204) 3 (7) 
+  SerializedRAMIndex
+	Word "information" occurs in 3 documents: 0 (33) 1 (205) 3 (7) 
+-----------------------
+Testing index performance on 1k document collection
+  Build time...
+	LuceneForwardIndex:	5s 643ms 
+	LuceneIndex:	3s 610ms ``
+	RAMIndex:	14s 924ms 
+	DiskIndex:	0ms 
+  Load time...
+	LuceneForwardIndex:	19ms 
+	LuceneIndex:	7ms 
+	RAMIndex:	10s 883ms 
+	DiskIndex:	0ms 
+  Disk space...
+	LuceneForwardIndex:	4904K
+	LuceneIndex:	1994K
+	RAMIndex:	13870K
+-----------------------
+Testing index performance on 10k document collection
+  Build time...
+	LuceneForwardIndex:	33s 20ms 
+	LuceneIndex:	25s 724ms 
+	RAMIndex:	1min 35s 479ms 
+	DiskIndex:	0ms 
+  Load time...
+	LuceneForwardIndex:	24ms 
+	LuceneIndex:	25ms 
+	RAMIndex:	1min 10s 298ms 
+	DiskIndex:	0ms 
+  Disk space...
+	LuceneForwardIndex:	37051K
+	LuceneIndex:	12989K
+	RAMIndex:	92184K
+-----------------------
+Testing index performance on 100k document collection
+  Build time...
+	LuceneForwardIndex:	6min 9s 455ms 
+	LuceneIndex:	4min 44s 328ms 
+	RAMIndex:	17min 15s 64ms 
+	DiskIndex:	0ms 
+  Load time...
+	LuceneForwardIndex:	187ms 
+	LuceneIndex:	198ms 
+	RAMIndex:	12min 45s 637ms 
+	DiskIndex:	0ms 
+  Disk space...
+	LuceneForwardIndex:	380847K
+	LuceneIndex:	123334K
+	RAMIndex:	932572K
+-----------------------
+Checking engine results on URL collection
+  LuceneEngine + LuceneIndex: top 5 for query "information probability"
+	3.613654851913452	https://en.wikipedia.org/wiki/Information_theory
+	3.1682307720184326	https://en.wikipedia.org/wiki/Entropy
+	1.45045804977417	http://www.ir.uwaterloo.ca/book
+  SlowVSMEngine + LuceneForwardIndex: top 5 for query "information probability"
+	8.5916038066627	https://en.wikipedia.org/wiki/Information_theory
+	6.517147277236676	https://en.wikipedia.org/wiki/Entropy
+	2.041949314000618	http://www.ir.uwaterloo.ca/book
+  TermBasedVSMEngine + LuceneIndex: top 5 for query "information probability"
+	0.12220871670440933	http://www.ir.uwaterloo.ca/book
+	0.09738251875859176	https://en.wikipedia.org/wiki/Information_theory
+	0.054103486566405096	https://en.wikipedia.org/wiki/Entropy
+  TermBasedVSMEngine + SerializedRAMIndex: top 5 for query "information probability"
+  DocBasedVSMEngine + LuceneIndex: top 5 for query "information probability"
+	0.12220871670440933	http://www.ir.uwaterloo.ca/book
+	0.09738251875859176	https://en.wikipedia.org/wiki/Information_theory
+	0.054103486566405096	https://en.wikipedia.org/wiki/Entropy
+  DocBasedVSMEngine + SerializedRAMIndex: top 5 for query "information probability"
+-----------------------
+Testing engine performance on 1k document collection
+  LuceneEngine + LuceneIndex: top 5 for query "obama family tree"
+	10.16943359375	D:\migal\workspace\BMINF\practica2\collections\docs1k.zip\clueweb09-en0010-79-2218.html
+	10.022083282470703	D:\migal\workspace\BMINF\practica2\collections\docs1k.zip\clueweb09-en0001-02-21241.html
+	9.842147827148438	D:\migal\workspace\BMINF\practica2\collections\docs1k.zip\clueweb09-en0010-57-32937.html
+	9.692230224609375	D:\migal\workspace\BMINF\practica2\collections\docs1k.zip\clueweb09-enwp01-59-16163.html
+	9.691903114318848	D:\migal\workspace\BMINF\practica2\collections\docs1k.zip\clueweb09-enwp02-06-15081.html
+  --> 58ms 
+  SlowVSMEngine + LuceneForwardIndex: top 5 for query "obama family tree"
+	24.988768257996423	D:\migal\workspace\BMINF\practica2\collections\docs1k.zip\clueweb09-enwp01-59-16163.html
+	24.97696987265261	D:\migal\workspace\BMINF\practica2\collections\docs1k.zip\clueweb09-enwp02-06-15081.html
+	24.97347316218361	D:\migal\workspace\BMINF\practica2\collections\docs1k.zip\clueweb09-enwp00-00-9498.html
+	24.97347316218361	D:\migal\workspace\BMINF\practica2\collections\docs1k.zip\clueweb09-enwp00-04-9625.html
+	24.97347316218361	D:\migal\workspace\BMINF\practica2\collections\docs1k.zip\clueweb09-enwp00-13-12487.html
+  --> 443ms 
+  TermBasedVSMEngine + LuceneIndex: top 5 for query "obama family tree"
+	0.2515081364281194	D:\migal\workspace\BMINF\practica2\collections\docs1k.zip\clueweb09-en0010-79-2218.html
+	0.22953331116919237	D:\migal\workspace\BMINF\practica2\collections\docs1k.zip\clueweb09-en0001-02-21241.html
+	0.18475020815955118	D:\migal\workspace\BMINF\practica2\collections\docs1k.zip\clueweb09-en0001-02-21397.html
+	0.1801140657125183	D:\migal\workspace\BMINF\practica2\collections\docs1k.zip\clueweb09-en0003-21-23666.html
+	0.1717804992688949	D:\migal\workspace\BMINF\practica2\collections\docs1k.zip\clueweb09-en0010-57-32937.html
+  --> 4ms 
+  TermBasedVSMEngine + SerializedRAMIndex: top 5 for query "obama family tree"
+  --> 0ms 
+  --> 0ms 
+  --> 0ms 
+-----------------------
+Testing engine performance on 10k document collection
+  LuceneEngine + LuceneIndex: top 5 for query "air tavel information"
+	13.77255630493164	D:\migal\workspace\BMINF\practica2\collections\docs10k.zip\clueweb09-en0002-80-19401.html
+	7.898706436157227	D:\migal\workspace\BMINF\practica2\collections\docs10k.zip\clueweb09-en0011-68-23013.html
+	4.504917621612549	D:\migal\workspace\BMINF\practica2\collections\docs10k.zip\clueweb09-en0008-24-10162.html
+	4.500087261199951	D:\migal\workspace\BMINF\practica2\collections\docs10k.zip\clueweb09-en0001-94-20373.html
+	4.490822792053223	D:\migal\workspace\BMINF\practica2\collections\docs10k.zip\clueweb09-en0000-21-06040.html
+  --> 136ms 
+  SlowVSMEngine + LuceneForwardIndex: top 5 for query "air tavel information"
+	35.04078313350628	D:\migal\workspace\BMINF\practica2\collections\docs10k.zip\clueweb09-en0002-80-19401.html
+	15.520246763214665	D:\migal\workspace\BMINF\practica2\collections\docs10k.zip\clueweb09-en0011-68-23013.html
+	14.312725743916776	D:\migal\workspace\BMINF\practica2\collections\docs10k.zip\clueweb09-en0004-65-06157.html
+	13.996534514778403	D:\migal\workspace\BMINF\practica2\collections\docs10k.zip\clueweb09-en0004-07-04342.html
+	13.54542331597362	D:\migal\workspace\BMINF\practica2\collections\docs10k.zip\clueweb09-en0003-67-03427.html
+  --> 2s 221ms 
+  TermBasedVSMEngine + LuceneIndex: top 5 for query "air tavel information"
+	0.17637669220345098	D:\migal\workspace\BMINF\practica2\collections\docs10k.zip\clueweb09-en0000-06-04760.html
+	0.14886676224076684	D:\migal\workspace\BMINF\practica2\collections\docs10k.zip\clueweb09-en0000-14-05156.html
+	0.1480050879960177	D:\migal\workspace\BMINF\practica2\collections\docs10k.zip\clueweb09-en0000-73-04599.html
+	0.14547557962690447	D:\migal\workspace\BMINF\practica2\collections\docs10k.zip\clueweb09-en0006-16-29644.html
+	0.14520575898872087	D:\migal\workspace\BMINF\practica2\collections\docs10k.zip\clueweb09-en0007-59-22958.html
+  --> 98ms 
+  TermBasedVSMEngine + SerializedRAMIndex: top 5 for query "air tavel information"
+  --> 8ms 
+  --> 0ms 
+  --> 0ms 
+-----------------------
+Testing engine performance on 100k document collection

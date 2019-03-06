@@ -88,6 +88,7 @@ public class DiskIndexBuilder  extends AbstractIndexBuilder{
         
         index.saveDictionary(dictionary,indexPath);
         index.setNumDocs(numDocs);
+        index.loadIndex(indexPath);
         
         saveDocNorms(indexPath);
         

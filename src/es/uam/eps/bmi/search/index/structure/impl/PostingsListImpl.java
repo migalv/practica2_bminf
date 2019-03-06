@@ -27,6 +27,10 @@ public class PostingsListImpl implements PostingsList, Serializable {
         postings = new ArrayList<>();
     }
     
+    public void addNewPosting(Posting newPosting){
+        postings.add(newPosting);
+    }
+    
     public void addPosting(int docID){
         if(!postings.isEmpty() && docID == postings.get(postings.size()-1).getDocID()){
             postings.get(postings.size()-1).add1();

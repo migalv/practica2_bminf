@@ -38,9 +38,9 @@ public class TestEngine {
         String baseIndexPath = "index/urls";
 
         // Construcción
-        new LuceneForwardIndexBuilder().build(collPath, baseIndexPath + "/lucene/forward");
-        new LuceneBuilder().build(collPath, baseIndexPath + "/lucene");
-        new SerializedRAMIndexBuilder().build(collPath, baseIndexPath + "/ram");
+        //new LuceneForwardIndexBuilder().build(collPath, baseIndexPath + "/lucene/forward");
+        //new LuceneBuilder().build(collPath, baseIndexPath + "/lucene");
+        //new SerializedRAMIndexBuilder().build(collPath, baseIndexPath + "/ram");
         new DiskIndexBuilder().build(collPath, baseIndexPath + "/disk");
         
         // Excepción
@@ -63,8 +63,8 @@ public class TestEngine {
         /////////////////////////////////////
         
         testIndexPerformance("1k", "collections/docs1k.zip", "index/1k");
-        testIndexPerformance("10k", "collections/docs10k.zip", "index/10k");
-        testIndexPerformance("100k", "collections/docs100k.zip", "index/100k");
+        //testIndexPerformance("10k", "collections/docs10k.zip", "index/10k");
+        //testIndexPerformance("100k", "collections/docs100k.zip", "index/100k");
 
         /////////////////////////////////////
         // Búsqueda: pruebas de corrección //

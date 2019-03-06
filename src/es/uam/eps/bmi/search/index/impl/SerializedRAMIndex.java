@@ -38,7 +38,7 @@ public class SerializedRAMIndex extends AbstractIndex implements Serializable{
 
     public SerializedRAMIndex(String indexPath) throws NoIndexException, IOException {
         if (indexPath.equals("") || (new File(indexPath).exists() == false)  || indexPath == null){
-            throw new NoIndexException("Ruta esta vacia");
+            throw new NoIndexException(indexPath);
         }
         this.loadIndex(indexPath);
 
@@ -86,20 +86,14 @@ public class SerializedRAMIndex extends AbstractIndex implements Serializable{
     }
 
     public void saveDictionary(Map<String, PostingsListImpl> dictionary,String indexPath) throws IOException {
-        this.dictionary = new TreeMap<>(dictionary);
+        this.dictionary = dictionary;
         this.indexPath = indexPath;
-
-        // Limpiamos la memoria RAM para no tener dos diccionarios a la vez
-        dictionary.clear();
-        dictionary = null;
-
               
         //Finalmente guardamos el diccionario ordenado
         try(ObjectOutputStream out= new ObjectOutputStream(new FileOutputStream(indexPath + File.separator + Config.INDEX_FILE))){
             out.writeObject(this.dictionary); 
             out.close();
         }
-
     }
 
     public void setNumDocs(int numDocs) {
