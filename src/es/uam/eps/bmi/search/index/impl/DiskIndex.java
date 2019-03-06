@@ -45,15 +45,18 @@ public class DiskIndex extends AbstractIndex implements Serializable{
     String indexPath;
 
     public DiskIndex(String indexPath) throws NoIndexException, IOException {
+        this.dictionary = new HashMap<>();
+        this.indexPath = indexPath;
+        
         if (indexPath.equals("") || (new File(indexPath).exists() == false)  || indexPath == null){
-            throw new NoIndexException("Ruta esta vacia");
+            throw new NoIndexException(indexPath);
         }
         this.loadIndex(indexPath);
 
     }
     
     public DiskIndex(){
-        
+        this.dictionary = new HashMap<>();
     }
 
     @Override
@@ -69,20 +72,18 @@ public class DiskIndex extends AbstractIndex implements Serializable{
         long freq = 0;
         PostingsListImpl postingsList = new PostingsListImpl();
 
-        //Guardamos en un fichero el diccionario dato a dato
-        FileInputStream fPost = new FileInputStream(indexPath + File.separator + Config.POSTINGS_FILE);
-        fPost.skip(offset);
-        
-        try (DataInputStream inPost = new DataInputStream(fPost)) {
-            numPostings = inPost.readInt();
-            for(int i = 0; i < numPostings; i++){
-                docID = inPost.readInt();
-                freq = inPost.readLong();
-                postingsList.addNewPosting(new Posting(docID, freq));
+        try ( //Guardamos en un fichero el diccionario dato a dato
+            FileInputStream fPost = new FileInputStream(indexPath + File.separator + Config.POSTINGS_FILE)) {
+            fPost.skip(offset);
+            try (DataInputStream inPost = new DataInputStream(fPost)) {
+                numPostings = inPost.readInt();
+                for(int i = 0; i < numPostings; i++){
+                    docID = inPost.readInt();
+                    freq = inPost.readLong();
+                    postingsList.addNewPosting(new Posting(docID, freq));
+                }
             }
         }
-        
-        fPost.close();
         
         return postingsList;
     }
@@ -114,31 +115,34 @@ public class DiskIndex extends AbstractIndex implements Serializable{
         return docPaths.get(docID);
     }
 
-    public void saveDictionary(Map<String, PostingsListImpl> dictionary, String indexPath) throws IOException {
+    public void saveDictionary(Map<String, PostingsListImpl> dictionary, String indexPath) throws IOException {        
         this.indexPath = indexPath;
         
-        this.dictionary = new HashMap<>();
-
         //Guardamos en un fichero el diccionario dato a dato
         FileOutputStream fDic = new FileOutputStream(indexPath + File.separator + Config.DICTIONARY_FILE);
         FileOutputStream fPost = new FileOutputStream(indexPath + File.separator + Config.POSTINGS_FILE);
         try (DataOutputStream outDic = new DataOutputStream(fDic); DataOutputStream outPost = new DataOutputStream(fPost);) {
             for (Map.Entry<String, PostingsListImpl> entry : dictionary.entrySet()) {
+                long postingBytes = 0;
                 // Escribimos el tamaño del termino
                 outDic.writeInt(entry.getKey().getBytes().length);
                 // Escribimos el termino
                 outDic.writeBytes(entry.getKey());
                 // Escribimos el numero de postings
                 outPost.writeInt(entry.getValue().size());
+                postingBytes += Integer.BYTES;
                 for(Posting postings : entry.getValue()){
                     // Escribimos el DocID
                     outPost.writeInt(postings.getDocID());
-                    // Escribimos la frecuencia
+                    postingBytes += Integer.BYTES;
+                    // Escribimos la frecuencia 
                     outPost.writeLong(postings.getFreq());
+                    postingBytes += Long.BYTES;
                 }
                 // Escribimos el offset
-                outDic.writeLong(outPost.size());
-                this.dictionary.put(entry.getKey(), (long) outPost.size());
+                long offset = outPost.size() - postingBytes;
+                outDic.writeLong(offset);
+                this.dictionary.put(entry.getKey(), offset);
             }
             outDic.close();
             outPost.close();
@@ -157,18 +161,21 @@ public class DiskIndex extends AbstractIndex implements Serializable{
     public void loadIndex(String indexPath) throws FileNotFoundException, IOException {
         
         int termSize = 0;
-        byte[] buffer = null;
+        byte[] buffer;
         String term = null;
         long offset = 0;
         
         // Abrimos el archivo del dictionario
         FileInputStream fDic = new FileInputStream(indexPath + File.separator + Config.DICTIONARY_FILE);
         try (DataInputStream inDic = new DataInputStream(fDic)) {
-            // Leemo la longitud del termino
-            while((termSize = inDic.readInt()) > 0) {
+            // Leemos hasta el final del archivo
+            while(inDic.available() > 0) {
+                // Leemos la longitud del termino
+                termSize = inDic.readInt();
+                buffer = new byte[termSize];
                 //Leemos el termino
                 inDic.read(buffer, 0, termSize);
-                term = Arrays.toString(buffer);
+                term = new String(buffer);
                 // Leemos el offset de la lista de postings
                 offset = inDic.readLong();
                 

@@ -64,7 +64,7 @@ public class DiskIndexBuilder  extends AbstractIndexBuilder{
     @Override
     public void build(String collectionPath, String indexPath) throws IOException {
         if (indexPath == null || indexPath.equals("")) {
-            throw new NoIndexException("Ruta esta vacia");
+            throw new NoIndexException(indexPath);
         }
         this.indexPath = indexPath;
         clear(indexPath);
