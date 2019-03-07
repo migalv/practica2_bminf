@@ -68,7 +68,6 @@ public class DiskIndexBuilder  extends AbstractIndexBuilder{
         }
         this.indexPath = indexPath;
         clear(indexPath);
-        numDocs = 0;
         
         index = new DiskIndex();
         index.docPath();
@@ -87,7 +86,6 @@ public class DiskIndexBuilder  extends AbstractIndexBuilder{
         else indexURLs(f);
         
         index.saveDictionary(dictionary,indexPath);
-        index.setNumDocs(numDocs);
         index.loadIndex(indexPath);
         
         saveDocNorms(indexPath);

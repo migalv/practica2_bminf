@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  *
@@ -32,7 +31,6 @@ import java.util.TreeMap;
 public class SerializedRAMIndex extends AbstractIndex implements Serializable{
 
     Map<String, PostingsListImpl> dictionary;
-    int numDocs;
     List<String> docPaths;
     String indexPath;
 
@@ -50,7 +48,7 @@ public class SerializedRAMIndex extends AbstractIndex implements Serializable{
 
     @Override
     public int numDocs() {
-        return numDocs;
+        return this.docPaths.size();
     }
 
     @Override
@@ -88,16 +86,19 @@ public class SerializedRAMIndex extends AbstractIndex implements Serializable{
     public void saveDictionary(Map<String, PostingsListImpl> dictionary,String indexPath) throws IOException {
         this.dictionary = dictionary;
         this.indexPath = indexPath;
-              
+           
+        //Guardamos los paths
+        try(ObjectOutputStream out= new ObjectOutputStream(new FileOutputStream(indexPath + File.separator + Config.PATHS_FILE))){
+            out.writeObject(this.docPaths); 
+            out.close();
+        }
+        
         //Finalmente guardamos el diccionario ordenado
         try(ObjectOutputStream out= new ObjectOutputStream(new FileOutputStream(indexPath + File.separator + Config.INDEX_FILE))){
             out.writeObject(this.dictionary); 
             out.close();
         }
-    }
-
-    public void setNumDocs(int numDocs) {
-        this.numDocs = numDocs;
+        
     }
 
     public void addDocPath(String path) {
@@ -106,12 +107,23 @@ public class SerializedRAMIndex extends AbstractIndex implements Serializable{
 
     private void loadIndex(String indexPath) throws FileNotFoundException, IOException {
         
+        //Cargamos los paths
+        try(ObjectInputStream in= new ObjectInputStream(new FileInputStream(indexPath + File.separator + Config.PATHS_FILE))){
+            this.docPaths =  (List<String>) in.readObject();
+            in.close();
+        } catch (IOException|ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        
+        //Cargamos el diccionario
         try(ObjectInputStream in= new ObjectInputStream(new FileInputStream(indexPath + File.separator + Config.INDEX_FILE))){
             this.dictionary = (Map<String, PostingsListImpl>) in.readObject();
             in.close();
         } catch (IOException|ClassNotFoundException e) {
             e.printStackTrace();
         }
+        //Cargamos los norms
+        loadNorms(indexPath);
     }
 
     public void docPath() {

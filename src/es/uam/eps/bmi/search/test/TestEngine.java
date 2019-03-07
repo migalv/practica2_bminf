@@ -38,9 +38,9 @@ public class TestEngine {
         String baseIndexPath = "index/urls";
 
         // Construcción
-        //new LuceneForwardIndexBuilder().build(collPath, baseIndexPath + "/lucene/forward");
-        //new LuceneBuilder().build(collPath, baseIndexPath + "/lucene");
-        //new SerializedRAMIndexBuilder().build(collPath, baseIndexPath + "/ram");
+        new LuceneForwardIndexBuilder().build(collPath, baseIndexPath + "/lucene/forward");
+        new LuceneBuilder().build(collPath, baseIndexPath + "/lucene");
+        new SerializedRAMIndexBuilder().build(collPath, baseIndexPath + "/ram");
         new DiskIndexBuilder().build(collPath, baseIndexPath + "/disk");
         
         // Excepción
@@ -53,9 +53,9 @@ public class TestEngine {
         // Inspección
         System.out.println("-----------------------");
         System.out.println("Checking index correction on URL collection");
-        //testIndex(new LuceneForwardIndex(baseIndexPath + "/lucene/forward"), "information");
-        //testIndex(new LuceneIndex(baseIndexPath + "/lucene"), "information");
-        //testIndex(new SerializedRAMIndex(baseIndexPath + "/ram"), "information");
+        testIndex(new LuceneForwardIndex(baseIndexPath + "/lucene/forward"), "information");
+        testIndex(new LuceneIndex(baseIndexPath + "/lucene"), "information");
+        testIndex(new SerializedRAMIndex(baseIndexPath + "/ram"), "information");
         testIndex(new DiskIndex(baseIndexPath + "/disk"), "information");
 
         /////////////////////////////////////
@@ -63,8 +63,8 @@ public class TestEngine {
         /////////////////////////////////////
         
         testIndexPerformance("1k", "collections/docs1k.zip", "index/1k");
-        //testIndexPerformance("10k", "collections/docs10k.zip", "index/10k");
-        //testIndexPerformance("100k", "collections/docs100k.zip", "index/100k");
+        testIndexPerformance("10k", "collections/docs10k.zip", "index/10k");
+        testIndexPerformance("100k", "collections/docs100k.zip", "index/100k");
 
         /////////////////////////////////////
         // Búsqueda: pruebas de corrección //

@@ -61,7 +61,7 @@ public class DiskIndex extends AbstractIndex implements Serializable{
 
     @Override
     public int numDocs() {
-        return numDocs;
+        return this.docPaths.size();
     }
 
     @Override
@@ -118,6 +118,12 @@ public class DiskIndex extends AbstractIndex implements Serializable{
     public void saveDictionary(Map<String, PostingsListImpl> dictionary, String indexPath) throws IOException {        
         this.indexPath = indexPath;
         
+        //Guardamos los paths
+        try(ObjectOutputStream out= new ObjectOutputStream(new FileOutputStream(indexPath + File.separator + Config.PATHS_FILE))){
+            out.writeObject(this.docPaths); 
+            out.close();
+        }
+        
         //Guardamos en un fichero el diccionario dato a dato
         FileOutputStream fDic = new FileOutputStream(indexPath + File.separator + Config.DICTIONARY_FILE);
         FileOutputStream fPost = new FileOutputStream(indexPath + File.separator + Config.POSTINGS_FILE);
@@ -150,10 +156,6 @@ public class DiskIndex extends AbstractIndex implements Serializable{
         dictionary.clear();
     }
 
-    public void setNumDocs(int numDocs) {
-        this.numDocs = numDocs;
-    }
-
     public void addDocPath(String path) {
         docPaths.add(path);
     }
@@ -164,6 +166,14 @@ public class DiskIndex extends AbstractIndex implements Serializable{
         byte[] buffer;
         String term = null;
         long offset = 0;
+        
+        //Cargamos los paths
+        try(ObjectInputStream in= new ObjectInputStream(new FileInputStream(indexPath + File.separator + Config.PATHS_FILE))){
+            this.docPaths =  (List<String>) in.readObject();
+            in.close();
+        } catch (IOException|ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         
         // Abrimos el archivo del dictionario
         FileInputStream fDic = new FileInputStream(indexPath + File.separator + Config.DICTIONARY_FILE);
@@ -183,6 +193,8 @@ public class DiskIndex extends AbstractIndex implements Serializable{
             }
             inDic.close();
         }
+        //Cargamos los norms
+        loadNorms(indexPath);
     }
 
     public void docPath() {

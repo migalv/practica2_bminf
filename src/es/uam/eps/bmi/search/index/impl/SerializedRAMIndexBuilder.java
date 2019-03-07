@@ -68,7 +68,6 @@ public class SerializedRAMIndexBuilder extends AbstractIndexBuilder{
         }
         this.indexPath = indexPath;
         clear(indexPath);
-        numDocs = 0;
         
         index = new SerializedRAMIndex();
         index.docPath();
@@ -87,7 +86,6 @@ public class SerializedRAMIndexBuilder extends AbstractIndexBuilder{
         else indexURLs(f);
         
         index.saveDictionary(dictionary,indexPath);
-        index.setNumDocs(numDocs);
         
         saveDocNorms(indexPath);
         
