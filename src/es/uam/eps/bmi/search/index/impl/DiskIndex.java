@@ -5,48 +5,33 @@
  */
 package es.uam.eps.bmi.search.index.impl;
 
-import es.uam.eps.bmi.search.index.AbstractIndex;
 import es.uam.eps.bmi.search.index.Config;
 import es.uam.eps.bmi.search.index.NoIndexException;
 import es.uam.eps.bmi.search.index.structure.Posting;
 import es.uam.eps.bmi.search.index.structure.PostingsList;
 import es.uam.eps.bmi.search.index.structure.impl.PostingsListImpl;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  *
  * @author migal
  */
-public class DiskIndex extends AbstractIndex implements Serializable{
-  
-    Map<String, Long> dictionary;
-    int numDocs;
-    List<String> docPaths;
-    String indexPath;
+public class DiskIndex extends IndexImpl{
+    public Map<String, Long> dictionaryTerms;
+
 
     public DiskIndex(String indexPath) throws NoIndexException, IOException {
-        this.dictionary = new HashMap<>();
-        this.indexPath = indexPath;
+        this.dictionaryTerms = new HashMap<>();
+        this.indexPath=indexPath;
         
         if (indexPath.equals("") || (new File(indexPath).exists() == false)  || indexPath == null){
             throw new NoIndexException(indexPath);
@@ -56,17 +41,18 @@ public class DiskIndex extends AbstractIndex implements Serializable{
     }
     
     public DiskIndex(){
-        this.dictionary = new HashMap<>();
+        this.dictionaryTerms = new HashMap<>();
+    }
+    
+    @Override
+    public Collection<String> getAllTerms() throws IOException {
+        return dictionaryTerms.keySet();
     }
 
-    @Override
-    public int numDocs() {
-        return this.docPaths.size();
-    }
 
     @Override
     public PostingsList getPostings(String term) throws IOException {
-        long offset = dictionary.get(term);
+        long offset = dictionaryTerms.get(term);
         int numPostings = 0;
         int docID = 0;
         long freq = 0;
@@ -89,11 +75,6 @@ public class DiskIndex extends AbstractIndex implements Serializable{
     }
 
     @Override
-    public Collection<String> getAllTerms() throws IOException {
-        return dictionary.keySet();
-    }
-
-    @Override
     public long getTotalFreq(String term) throws IOException {
 
         long total = 0;
@@ -104,68 +85,22 @@ public class DiskIndex extends AbstractIndex implements Serializable{
 
         return total;
     }
-
+    
     @Override
     public long getDocFreq(String term) throws IOException {
         return getPostings(term).size();
     }
-
+    
+    
     @Override
-    public String getDocPath(int docID) throws IOException {
-        return docPaths.get(docID);
-    }
-
-    public void saveDictionary(Map<String, PostingsListImpl> dictionary, String indexPath) throws IOException {        
-        this.indexPath = indexPath;
-        
-        //Guardamos los paths
-        try(ObjectOutputStream out= new ObjectOutputStream(new FileOutputStream(indexPath + File.separator + Config.PATHS_FILE))){
-            out.writeObject(this.docPaths); 
-            out.close();
-        }
-        
-        //Guardamos en un fichero el diccionario dato a dato
-        FileOutputStream fDic = new FileOutputStream(indexPath + File.separator + Config.DICTIONARY_FILE);
-        FileOutputStream fPost = new FileOutputStream(indexPath + File.separator + Config.POSTINGS_FILE);
-        try (DataOutputStream outDic = new DataOutputStream(fDic); DataOutputStream outPost = new DataOutputStream(fPost);) {
-            for (Map.Entry<String, PostingsListImpl> entry : dictionary.entrySet()) {
-                long postingBytes = 0;
-                // Escribimos el tamaño del termino
-                outDic.writeInt(entry.getKey().getBytes().length);
-                // Escribimos el termino
-                outDic.writeBytes(entry.getKey());
-                // Escribimos el numero de postings
-                outPost.writeInt(entry.getValue().size());
-                postingBytes += Integer.BYTES;
-                for(Posting postings : entry.getValue()){
-                    // Escribimos el DocID
-                    outPost.writeInt(postings.getDocID());
-                    postingBytes += Integer.BYTES;
-                    // Escribimos la frecuencia 
-                    outPost.writeLong(postings.getFreq());
-                    postingBytes += Long.BYTES;
-                }
-                // Escribimos el offset
-                long offset = outPost.size() - postingBytes;
-                outDic.writeLong(offset);
-                this.dictionary.put(entry.getKey(), offset);
-            }
-            outDic.close();
-            outPost.close();
-        }
-        dictionary.clear();
-    }
-
-    public void addDocPath(String path) {
-        docPaths.add(path);
-    }
-
     public void loadIndex(String indexPath) throws FileNotFoundException, IOException {
         
         int termSize = 0;
         byte[] buffer;
         String term = null;
         long offset = 0;
+        
+        this.indexPath=indexPath;
         
         //Cargamos los paths
         try(ObjectInputStream in= new ObjectInputStream(new FileInputStream(indexPath + File.separator + Config.PATHS_FILE))){
@@ -189,7 +124,7 @@ public class DiskIndex extends AbstractIndex implements Serializable{
                 // Leemos el offset de la lista de postings
                 offset = inDic.readLong();
                 
-                dictionary.put(term, offset);
+                dictionaryTerms.put(term, offset);
             }
             inDic.close();
         }
@@ -197,7 +132,8 @@ public class DiskIndex extends AbstractIndex implements Serializable{
         loadNorms(indexPath);
     }
 
-    public void docPath() {
-        docPaths = new ArrayList<>();
-    }  
+    public void put(String key, long offset) {
+        this.dictionaryTerms.put(key, offset);
+    }
+
 }
