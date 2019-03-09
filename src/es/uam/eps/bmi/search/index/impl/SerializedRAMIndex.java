@@ -1,7 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * 
+ * Fichero SerializedRAMIndex.java.
+ * 
+ * 
+ * @version 1.0
+ * 
+ * Created on 26/02/2019  
  */
 package es.uam.eps.bmi.search.index.impl;
 
@@ -21,11 +25,22 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Clase SerializedRAMIndex encargada del indice en RAM serializado
  *
- * @author migal
+ * @author Miguel Alvarez Lesmes
+ * @author Sergio Romero Tapiador
+ * 
  */
 public class SerializedRAMIndex extends IndexImpl implements Serializable{
 
+    /**
+     * Constructor primario de SerializedRAMIndex
+     * 
+     * @param indexPath ruta del indice
+     * 
+     * @throws NoIndexException
+     * @throws IOException 
+     */
     public SerializedRAMIndex(String indexPath) throws NoIndexException, IOException {
         
         if (indexPath.equals("") || (new File(indexPath).exists() == false)  || indexPath == null){
@@ -35,9 +50,18 @@ public class SerializedRAMIndex extends IndexImpl implements Serializable{
 
     }
     
+    /**
+     * Constructor secundario del indice
+     */
     public SerializedRAMIndex(){
     }
 
+    /**
+     * 
+     * @param term
+     * @return
+     * @throws IOException 
+     */
     @Override
     public PostingsList getPostings(String term) throws IOException {
         return dictionary.get(term);
