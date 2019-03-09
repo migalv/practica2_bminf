@@ -3,13 +3,16 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/sergio/practica2/src/es/uam/eps/bmi/search/index/impl/SerializedRAMIndexBuilder.java</file>
             <file>file:/home/sergio/practica2/src/es/uam/eps/bmi/search/index/impl/DiskIndex.java</file>
-            <file>file:/home/sergio/practica2/src/es/uam/eps/bmi/search/index/impl/SerializedRAMIndex.java</file>
-            <file>file:/home/sergio/practica2/src/es/uam/eps/bmi/search/index/impl/IndexBuilderImpl.java</file>
+            <file>file:/home/sergio/practica2/src/es/uam/eps/bmi/search/vsm/AbstractVSMEngine.java</file>
+            <file>file:/home/sergio/practica2/src/es/uam/eps/bmi/search/ranking/impl/RankingImpl.java</file>
+            <file>file:/home/sergio/practica2/src/es/uam/eps/bmi/search/ui/TextResultDocRenderer.java</file>
+            <file>file:/home/sergio/practica2/src/es/uam/eps/bmi/search/vsm/TermBasedVSMEngine.java</file>
+            <file>file:/home/sergio/practica2/src/es/uam/eps/bmi/search/vsm/DocBasedVSMEngine.java</file>
+            <file>file:/home/sergio/practica2/src/es/uam/eps/bmi/search/vsm/SlowVSMEngine.java</file>
             <file>file:/home/sergio/practica2/src/es/uam/eps/bmi/search/index/impl/IndexImpl.java</file>
-            <file>file:/home/sergio/practica2/src/es/uam/eps/bmi/search/index/impl/DiskIndexBuilder.java</file>
-            <file>file:/home/sergio/practica2/src/es/uam/eps/bmi/search/index/Index.java</file>
+            <file>file:/home/sergio/practica2/src/es/uam/eps/bmi/search/ranking/impl/RankingImplDoc.java</file>
+            <file>file:/home/sergio/practica2/src/es/uam/eps/bmi/search/vsm/HeapPosting.java</file>
         </group>
     </open-files>
 </project-private>

@@ -1,7 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * 
+ * Fichero DocBasedVSMEngine.java.
+ * 
+ * 
+ * @version 1.0
+ * 
+ * Created on 28/02/2019  
  */
 package es.uam.eps.bmi.search.vsm;
 
@@ -11,7 +15,6 @@ import es.uam.eps.bmi.search.index.structure.PostingsList;
 import es.uam.eps.bmi.search.ranking.SearchRanking;
 import es.uam.eps.bmi.search.ranking.impl.RankingImpl;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -20,19 +23,39 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Clase DocBasedVSMEngine encargada de realizar las busquedas 
+ * a partir del metodo orientado a los documentos
  *
- * @author migal
+ * @author Miguel Alvarez Lesmes
+ * @author Sergio Romero Tapiador
+ * 
  */
 public class DocBasedVSMEngine extends AbstractVSMEngine {
 
     Map<Integer, Double> acumuladores;
 
-    
+    /**
+     * Constructor de DocBasedVSMEngine
+     * 
+     * @param index indice con el que realizaremos las distintas busquedas
+     */
     public DocBasedVSMEngine(Index index) {
         super(index);
         this.acumuladores = new HashMap<>();
     }
 
+    /**
+     * Funcion encargada de buscar los mejores resultados de los documentos
+     * a partir de una query enviada
+     * 
+     * @param query la consulta 
+     * 
+     * @param cutoff el limite de resultados que queremos mostrar
+     * 
+     * @return los mejores "cutoff" resultados del indice dada la query
+     * 
+     * @throws IOException 
+     */
     @Override
     public SearchRanking search(String query, int cutoff) throws IOException {
         String queryTerms[] = parse(query);
@@ -56,11 +79,16 @@ public class DocBasedVSMEngine extends AbstractVSMEngine {
             }
         }
         
+        //Mientras existan aun postings de los terminos
         while(!postingsHeap.isEmpty()){
+            //Sacamos el primer elemento de la cola
             HeapPosting hp = postingsHeap.poll();
             
+            //Obtenemos su docID y frecuencia
             int docID = hp.getPosting().getDocID();
             long freq = hp.getPosting().getFreq();
+            
+            //Obtenemos el termino de la query
             String queryTerm= hp.getQueryTerm();
             
             // Calculamos el tfidf
@@ -91,8 +119,6 @@ public class DocBasedVSMEngine extends AbstractVSMEngine {
                 }
             }
         });
-        
-        
         
         return ranking;
         

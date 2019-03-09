@@ -1,3 +1,12 @@
+/**
+ * 
+ * Fichero TermBasedVSMEngine.java.
+ * 
+ * 
+ * @version 1.0
+ * 
+ * Created on 24/02/2019  
+ */
 package es.uam.eps.bmi.search.vsm;
 
 import es.uam.eps.bmi.search.index.Index;
@@ -12,29 +21,55 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Clase TermBasedVSMEngine encargada de realizar las busquedas 
+ * a partir del metodo orientado a los terminos
  *
- * @author migal
+ * @author Miguel Alvarez Lesmes
+ * @author Sergio Romero Tapiador
+ * 
  */
 public class TermBasedVSMEngine extends AbstractVSMEngine {
 
     Map<Integer, Double> acumuladores;
     
+    /**
+     * Constructor de TermBasedVSMEngine
+     * 
+     * @param idx indice con el que realizaremos las distintas busquedas
+     */
     public TermBasedVSMEngine(Index idx) {
         super(idx);
         this.acumuladores = new HashMap<>();
     }
 
+    /**
+     * Funcion encargada de buscar los mejores resultados de los documentos
+     * a partir de una query enviada
+     * 
+     * @param query la consulta 
+     * 
+     * @param cutoff el limite de resultados que queremos mostrar
+     * 
+     * @return los mejores "cutoff" resultados del indice dada la query
+     * 
+     * @throws IOException 
+     */
     @Override
     public SearchRanking search(String query, int cutoff) throws IOException {
+        //Inicializamos variables necesarias para la busqueda
         String queryTerms[] = parse(query);
         int numDocs = index.numDocs();
         RankingImpl ranking = new RankingImpl(index, cutoff);
         RankingImpl finalRanking = new RankingImpl(index, cutoff);
 
-        
+        // Recuperamos la listas de postings para cada termino de la query
         for(String queryTerm : queryTerms){
+            //Obtenemos los postings de un termino
             PostingsList postings = index.getPostings(queryTerm);
+            
+            //Por cada posting del termino
             for(Posting posting : postings){
+                //Obtenemos su docID y frecuencia de cada posting
                 int docID = posting.getDocID();
                 long freq = posting.getFreq();
                 
