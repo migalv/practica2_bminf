@@ -57,9 +57,12 @@ public class SerializedRAMIndex extends IndexImpl implements Serializable{
     }
 
     /**
+     * Devuelve una lista de postings dado un termino
      * 
-     * @param term
-     * @return
+     * @param term el termino
+     * 
+     * @return la lista de postings vinculada al termino
+     * 
      * @throws IOException 
      */
     @Override
@@ -67,16 +70,36 @@ public class SerializedRAMIndex extends IndexImpl implements Serializable{
         return dictionary.get(term);
     }
     
+    /**
+     * Devuelve el numero de documentos en el que se encuentra el termino term
+     * 
+     * @param term el termino
+     * 
+     * @return el numero de documentos presentes
+     * 
+     * @throws IOException 
+     */
     @Override
     public long getDocFreq(String term) throws IOException {
         return dictionary.get(term).size();
     }
     
+    /**
+     * Dado un termino devolvemos su frecuencia en el indice
+     * 
+     * @param term el termino
+     * 
+     * @return la frecuencia total del termino
+     * 
+     * @throws IOException 
+     */
     @Override
     public long getTotalFreq(String term) throws IOException {
 
         long total = 0;
 
+        //Sumamos el acumulado de la frecuencia del termino
+        //en cada documento en el que se encuentra
         for (Posting posting : dictionary.get(term)) {
             total += posting.getFreq();
         }
@@ -84,15 +107,29 @@ public class SerializedRAMIndex extends IndexImpl implements Serializable{
         return total;
     }
     
+    /**
+     * Devuelve la lista de terminos del indice
+     * 
+     * @return una coleccion con los terminos del indice
+     * @throws IOException 
+     */
     @Override
     public Collection<String> getAllTerms() throws IOException {
         return dictionary.keySet();
     }
 
+    /**
+     * Carga el indice SerializedRAMIndex, el cual ha sido previamente guardado
+     * 
+     * @param indexPath la ruta donde se encuentra el indice
+     * 
+     * @throws FileNotFoundException
+     * @throws IOException 
+     */
     @Override
     void loadIndex(String indexPath) throws FileNotFoundException, IOException {
         
-        //Cargamos los paths
+        //Cargamos los paths de los documentos
         try(ObjectInputStream in= new ObjectInputStream(new FileInputStream(indexPath + File.separator + Config.PATHS_FILE))){
             this.docPaths =  (List<String>) in.readObject();
             in.close();
@@ -100,17 +137,24 @@ public class SerializedRAMIndex extends IndexImpl implements Serializable{
             e.printStackTrace();
         }
         
-        //Cargamos el diccionario
+        //Cargamos el diccionario de los terminos junto con sus respectivas listas de postings
         try(ObjectInputStream in= new ObjectInputStream(new FileInputStream(indexPath + File.separator + Config.INDEX_FILE))){
             this.dictionary = (Map<String, PostingsListImpl>) in.readObject();
             in.close();
         } catch (IOException|ClassNotFoundException e) {
             e.printStackTrace();
         }
+        
         //Cargamos los norms
         loadNorms(indexPath);
     }
 
+    /**
+     * Funcion sin uso para esta clase
+     * 
+     * @param key el termino
+     * @param offset el offset en el fichero Config.POSTINGS_FILE
+     */
     @Override
     void put(String key, long offset) {
     }

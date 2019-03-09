@@ -1,7 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * 
+ * Fichero IndexBuilderImpl.java.
+ * 
+ * 
+ * @version 1.0
+ * 
+ * Created on 8/03/2019  
  */
 package es.uam.eps.bmi.search.index.impl;
 
@@ -13,12 +17,31 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+/**
+ * Clase abstracta IndexBuilderImpl encargada de gestionar los diferentes indices 
+ * implementados
+ *
+ * @author Miguel Alvarez Lesmes
+ * @author Sergio Romero Tapiador
+ * 
+ */
 public abstract class IndexBuilderImpl  extends AbstractIndexBuilder{
     int numDocs = 0;
     Map<String, PostingsListImpl> dictionary = new HashMap<>();
     String indexPath;
     IndexImpl index;
     
+    /**
+     * Funcion comun en la que realiza el parseo de los documentos
+     * y guarda los terminos en el mapa junto con sus respectivas listas de postings
+     * actualizadas a cada momento
+     * 
+     * @param text el texto del documento
+     * 
+     * @param path la ruta del documento
+     * 
+     * @throws IOException 
+     */
     @Override
     protected void indexText(String text, String path) throws IOException {        
         // Recuperamos todos los terminos del texto
@@ -50,13 +73,39 @@ public abstract class IndexBuilderImpl  extends AbstractIndexBuilder{
         }
     }
 
+    /**
+     * Devuelve el indice requerido
+     * 
+     * @return el indice 
+     * 
+     * @throws IOException 
+     */
     @Override
     protected Index getCoreIndex() throws IOException {
         return index;
     }
     
+    /**
+     * Funcion abstracta encargada de crear el indice en la ruta proporcionada
+     * 
+     * @param collectionPath ruta donde se encuentran los documentos
+     * 
+     * @param indexPath ruta del indice
+     * 
+     * @throws IOException 
+     */
     @Override
     public abstract void build(String collectionPath, String indexPath) throws IOException;
+    
+    /**
+     * Funcion abstracta encargada de guardar el diccionario en disco
+     * 
+     * @param dictionary Diccionario de terminos y lista de postings
+     * 
+     * @param indexPath ruta del indice
+     * 
+     * @throws IOException 
+     */
     abstract void saveDictionary(Map<String, PostingsListImpl> dictionary, String indexPath) throws IOException;
 
 }
