@@ -21,6 +21,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -92,6 +93,10 @@ public class DiskIndex extends IndexImpl{
         int numPostings = 0;
         int docID = 0;
         long freq = 0;
+        // Tamaño en Bytes de un posting
+        int postingSize = Integer.BYTES + Long.BYTES;
+        int j;
+        ByteBuffer wrapped;
         
         RandomAccessFile postingFile = new RandomAccessFile(indexPath + File.separator + Config.POSTINGS_FILE, "r");
         postingFile.seek(offset);
@@ -107,12 +112,24 @@ public class DiskIndex extends IndexImpl{
 
         // Creamos a lista de postings apartir de los bytes leidos
         for(int i = 0; i < numPostings; i++){
-            docID = buffer[i*Integer.BYTES];
-            freq = buffer[i*Long.BYTES];
+            byte[] arr = new byte[Integer.BYTES];
+            for(j = 0; j < Integer.BYTES; j++){
+                arr[j] = buffer[(i*postingSize)+j];
+            }
+            wrapped = ByteBuffer.wrap(arr);
+            docID = wrapped.getInt();
+            
+            arr = new byte[Long.BYTES];
+            for(j = Integer.BYTES; j < Long.BYTES + Integer.BYTES; j++){
+                arr[j - Integer.BYTES] = buffer[(i*postingSize)+j];
+            }
+            wrapped = ByteBuffer.wrap(arr);
+            freq = wrapped.getLong();
+            
             postingsList.addNewPosting(new Posting(docID, freq));
         }
         
-        try ( //Guardamos en un fichero el diccionario dato a dato
+        /*try ( //Guardamos en un fichero el diccionario dato a dato
             FileInputStream fPost = new FileInputStream(indexPath + File.separator + Config.POSTINGS_FILE)) {
             //Nos situamos en la posicion del fichero donde se encuentran la lista de postings del termino
             fPost.skip(offset);
@@ -130,7 +147,7 @@ public class DiskIndex extends IndexImpl{
                     postingsList.addNewPosting(new Posting(docID, freq));
                 }
             }
-        }
+        }*/
         
         return postingsList;
     }

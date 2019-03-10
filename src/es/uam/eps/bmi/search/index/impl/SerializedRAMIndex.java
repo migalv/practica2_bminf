@@ -20,6 +20,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +44,7 @@ public class SerializedRAMIndex extends IndexImpl implements Serializable{
      */
     public SerializedRAMIndex(String indexPath) throws NoIndexException, IOException {
         
+        docPaths = new ArrayList<>();
         if (indexPath.equals("") || (new File(indexPath).exists() == false)  || indexPath == null){
             throw new NoIndexException(indexPath);
         }
@@ -52,8 +54,14 @@ public class SerializedRAMIndex extends IndexImpl implements Serializable{
     
     /**
      * Constructor secundario del indice
+     * @param indexPath
+     * @param dictionary
+     * 
      */
-    public SerializedRAMIndex(){
+    public SerializedRAMIndex(String indexPath, Map<String, PostingsListImpl> dictionary, List<String> paths){
+        docPaths = new ArrayList<>();
+        this.dictionary = dictionary;
+        this.docPaths = paths;
     }
 
     /**
@@ -129,13 +137,7 @@ public class SerializedRAMIndex extends IndexImpl implements Serializable{
     @Override
     void loadIndex(String indexPath) throws FileNotFoundException, IOException {
         
-        //Cargamos los paths de los documentos
-        try(ObjectInputStream in= new ObjectInputStream(new FileInputStream(indexPath + File.separator + Config.PATHS_FILE))){
-            this.docPaths =  (List<String>) in.readObject();
-            in.close();
-        } catch (IOException|ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        loadPaths(indexPath);
         
         //Cargamos el diccionario de los terminos junto con sus respectivas listas de postings
         try(ObjectInputStream in= new ObjectInputStream(new FileInputStream(indexPath + File.separator + Config.INDEX_FILE))){
@@ -147,6 +149,16 @@ public class SerializedRAMIndex extends IndexImpl implements Serializable{
         
         //Cargamos los norms
         loadNorms(indexPath);
+    }
+    
+    void loadPaths(String indexPath){
+        //Cargamos los paths de los documentos
+        try(ObjectInputStream in= new ObjectInputStream(new FileInputStream(indexPath + File.separator + Config.PATHS_FILE))){
+            this.docPaths =  (List<String>) in.readObject();
+            in.close();
+        } catch (IOException|ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

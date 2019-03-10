@@ -10,9 +10,11 @@
 package es.uam.eps.bmi.search.index.impl;
 
 import es.uam.eps.bmi.search.index.Config;
+import es.uam.eps.bmi.search.index.Index;
 import es.uam.eps.bmi.search.index.NoIndexException;
 import es.uam.eps.bmi.search.index.structure.impl.PostingsListImpl;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -39,14 +41,10 @@ public class SerializedRAMIndexBuilder extends IndexBuilderImpl{
     @Override
     public void build(String collectionPath, String indexPath) throws IOException {
         if (indexPath == null || indexPath.equals("")) {
-            throw new NoIndexException("Ruta esta vacia");
+            throw new NoIndexException(indexPath);
         }
         this.indexPath = indexPath;
         clear(indexPath);
-        
-        index = new SerializedRAMIndex();
-        index.docPath();
-
         
         // Abrimos el fichero que nos pasan como coleccion
         File f = new File(collectionPath);
@@ -62,13 +60,27 @@ public class SerializedRAMIndexBuilder extends IndexBuilderImpl{
         
         //Guardamos el indice 
         this.saveDictionary(dictionary,indexPath);
-        
+        this.savePaths(indexPath);
         //Seguidamente lo cargamos para poder trabajar con el
-        index.loadIndex(indexPath);
+        //index.loadIndex(indexPath);
 
         //Finalmente guardamos las norms de cada termino en disco
         saveDocNorms(indexPath);
         
+    }
+    
+    public Index getCoreIndex() throws IOException {
+        return new SerializedRAMIndex(indexPath, dictionary, paths);
+    }
+
+    private void savePaths(String indexPath) throws FileNotFoundException, IOException{
+        //Guardamos los paths
+        try(ObjectOutputStream out= new ObjectOutputStream(new FileOutputStream(indexPath + File.separator + Config.PATHS_FILE))){
+            // Posible perdida de tiempo
+            // Probar a escribirlo a mano
+            out.writeObject(paths); 
+            out.close();
+        }
     }
     
     /**
@@ -84,12 +96,6 @@ public class SerializedRAMIndexBuilder extends IndexBuilderImpl{
     public void saveDictionary(Map<String, PostingsListImpl> dictionary, String indexPath) throws IOException {
         this.dictionary = dictionary;
         this.indexPath = indexPath;
-           
-        //Guardamos los paths
-        try(ObjectOutputStream out= new ObjectOutputStream(new FileOutputStream(indexPath + File.separator + Config.PATHS_FILE))){
-            out.writeObject(index.getPaths()); 
-            out.close();
-        }
         
         //Finalmente guardamos el diccionario ordenado
         try(ObjectOutputStream out= new ObjectOutputStream(new FileOutputStream(indexPath + File.separator + Config.INDEX_FILE))){

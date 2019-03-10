@@ -10,6 +10,7 @@
 package es.uam.eps.bmi.search.index.impl;
 
 import es.uam.eps.bmi.search.index.Config;
+import es.uam.eps.bmi.search.index.Index;
 import es.uam.eps.bmi.search.index.NoIndexException;
 import es.uam.eps.bmi.search.index.structure.Posting;
 import es.uam.eps.bmi.search.index.structure.impl.PostingsListImpl;
@@ -18,6 +19,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.nio.ByteBuffer;
 import java.util.Map;
 
 /**
@@ -46,10 +48,6 @@ public class DiskIndexBuilder extends IndexBuilderImpl {
         this.indexPath = indexPath;
         clear(indexPath);
         
-        index = new DiskIndex();
-        index.docPath();
-
-        
         // Abrimos el fichero que nos pasan como coleccion
         File f = new File(collectionPath);
         
@@ -65,12 +63,13 @@ public class DiskIndexBuilder extends IndexBuilderImpl {
         //Guardamos el indice 
         this.saveDictionary(dictionary,indexPath);
         
-        //Seguidamente lo cargamos para poder trabajar con el
-        index.loadIndex(indexPath);
-        
         //Finalmente guardamos las norms de cada termino en disco
         saveDocNorms(indexPath);
         
+    }
+    
+    public Index getCoreIndex() throws IOException {
+        return new DiskIndex(indexPath);
     }
     
     /**
@@ -86,10 +85,11 @@ public class DiskIndexBuilder extends IndexBuilderImpl {
     public void saveDictionary(Map<String, PostingsListImpl> dictionary, String indexPath) throws IOException {        
         //Inicializamos la ruta del indice
         this.indexPath = indexPath;
+        ByteBuffer bb;
         
         //Guardamos los paths de los documentos
         try(ObjectOutputStream out= new ObjectOutputStream(new FileOutputStream(indexPath + File.separator + Config.PATHS_FILE))){
-            out.writeObject(index.getPaths()); 
+            out.writeObject(paths); 
             out.close();
         }
         
@@ -127,7 +127,7 @@ public class DiskIndexBuilder extends IndexBuilderImpl {
                 outDic.writeLong(offset);
                 
                 //Finalmente insertamos en el mapa de terminos el termino y el offset
-                this.index.put(entry.getKey(), offset);
+                //this.index.put(entry.getKey(), offset);
             }
             outDic.close();
             outPost.close();

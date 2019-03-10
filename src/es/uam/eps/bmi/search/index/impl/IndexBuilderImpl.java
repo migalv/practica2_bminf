@@ -13,7 +13,9 @@ import es.uam.eps.bmi.search.index.AbstractIndexBuilder;
 import es.uam.eps.bmi.search.index.Index;
 import es.uam.eps.bmi.search.index.structure.impl.PostingsListImpl;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -30,6 +32,7 @@ public abstract class IndexBuilderImpl  extends AbstractIndexBuilder{
     Map<String, PostingsListImpl> dictionary = new HashMap<>();
     String indexPath;
     IndexImpl index;
+    List<String> paths = new ArrayList<>();
     
     /**
      * Funcion comun en la que realiza el parseo de los documentos
@@ -50,7 +53,7 @@ public abstract class IndexBuilderImpl  extends AbstractIndexBuilder{
         // Contamos un nuevo documento
         numDocs++;
         // Añadimos su path
-        index.addDocPath(path);
+        paths.add(path);
         
         terms = text.toLowerCase().split("\\P{Alpha}+");
         
@@ -81,9 +84,7 @@ public abstract class IndexBuilderImpl  extends AbstractIndexBuilder{
      * @throws IOException 
      */
     @Override
-    protected Index getCoreIndex() throws IOException {
-        return index;
-    }
+    protected abstract Index getCoreIndex() throws IOException;
     
     /**
      * Funcion abstracta encargada de crear el indice en la ruta proporcionada
