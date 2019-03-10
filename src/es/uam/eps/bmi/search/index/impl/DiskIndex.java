@@ -20,6 +20,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.RandomAccessFile;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -91,7 +92,26 @@ public class DiskIndex extends IndexImpl{
         int numPostings = 0;
         int docID = 0;
         long freq = 0;
+        
+        RandomAccessFile postingFile = new RandomAccessFile(indexPath + File.separator + Config.POSTINGS_FILE, "r");
+        postingFile.seek(offset);
+        
+        int postingsBytes = 0;
+        
+        numPostings = postingFile.readInt();
+        postingsBytes = Integer.BYTES * numPostings + Long.BYTES * numPostings;
+        
+        // Leemos la lista de postings del archivo y nos la traemos a RAM
+        byte[] buffer = new byte[postingsBytes];
+        postingFile.read(buffer, 0, postingsBytes);
 
+        // Creamos a lista de postings apartir de los bytes leidos
+        for(int i = 0; i < numPostings; i++){
+            docID = buffer[i*Integer.BYTES];
+            freq = buffer[i*Long.BYTES];
+            postingsList.addNewPosting(new Posting(docID, freq));
+        }
+        
         try ( //Guardamos en un fichero el diccionario dato a dato
             FileInputStream fPost = new FileInputStream(indexPath + File.separator + Config.POSTINGS_FILE)) {
             //Nos situamos en la posicion del fichero donde se encuentran la lista de postings del termino
