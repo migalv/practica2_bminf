@@ -74,7 +74,7 @@ public class TermBasedVSMEngine extends AbstractVSMEngine {
                 long freq = posting.getFreq();
                 
                 // Calculamos el tfidf
-                double tfidf = tfidf(freq, index.getDocFreq(queryTerm), numDocs);
+                double tfidf = tfidf(freq, postings.size(), numDocs);
                 
                 // Si el docID ya está en los acumuladores le sumamos el score
                 if(acumuladores.containsKey(docID)){

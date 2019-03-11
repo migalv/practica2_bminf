@@ -10,8 +10,12 @@
 package es.uam.eps.bmi.search.index.impl;
 
 import es.uam.eps.bmi.search.index.AbstractIndexBuilder;
+import es.uam.eps.bmi.search.index.Config;
 import es.uam.eps.bmi.search.index.Index;
 import es.uam.eps.bmi.search.index.structure.impl.PostingsListImpl;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -109,4 +113,14 @@ public abstract class IndexBuilderImpl  extends AbstractIndexBuilder{
      */
     abstract void saveDictionary(Map<String, PostingsListImpl> dictionary, String indexPath) throws IOException;
 
+    protected void writePaths() throws FileNotFoundException, IOException{
+        
+        try (FileOutputStream outputStream = new FileOutputStream(indexPath + File.separator + Config.PATHS_FILE)) {
+            for(String path : paths){
+                outputStream.write((path + " ").getBytes());
+            }
+            outputStream.close();
+        }
+    }
+    
 }

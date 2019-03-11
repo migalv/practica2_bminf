@@ -61,6 +61,11 @@ public class DocBasedVSMEngine extends AbstractVSMEngine {
         String queryTerms[] = parse(query);
         int numDocs = index.numDocs();
         RankingImpl ranking = new RankingImpl(index, cutoff);
+        PostingsList termPostingsList = null;
+        
+        if(queryTerms.length < 0){
+            return ranking;
+        }
         
         // Heap de postings ordenados de menor a mayor por docID (tantos como terminos de la query)
         PriorityQueue<HeapPosting> postingsHeap = new PriorityQueue(queryTerms.length);
@@ -70,11 +75,11 @@ public class DocBasedVSMEngine extends AbstractVSMEngine {
         // Recuperamos la listas de postings para cada termino de la query
         for(String queryTerm : queryTerms){
             termFreq= index.getDocFreq(queryTerm);
-            Iterator<Posting> postingIterator = index.getPostings(queryTerm).iterator();
+            termPostingsList = index.getPostings(queryTerm);
+            Iterator<Posting> postingIterator = termPostingsList.iterator();
 
             //Solo añadimos si esta presente en el indice
             if(termFreq > 0){
-                PostingsList termPostingList=index.getPostings(queryTerm);
                 postingsHeap.add(new HeapPosting(postingIterator.next(),postingIterator,queryTerm));
             }
         }
@@ -92,7 +97,7 @@ public class DocBasedVSMEngine extends AbstractVSMEngine {
             String queryTerm= hp.getQueryTerm();
             
             // Calculamos el tfidf
-            double tfidf = tfidf(freq, index.getDocFreq(queryTerm), numDocs);
+            double tfidf = tfidf(freq, termPostingsList.size(), numDocs);
             
             // Si el docID ya está en los acumuladores le sumamos el score
             if(acumuladores.containsKey(docID)){

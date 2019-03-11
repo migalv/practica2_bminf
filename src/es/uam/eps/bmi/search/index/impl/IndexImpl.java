@@ -10,13 +10,16 @@
 package es.uam.eps.bmi.search.index.impl;
 
 import es.uam.eps.bmi.search.index.AbstractIndex;
+import es.uam.eps.bmi.search.index.Config;
 import es.uam.eps.bmi.search.index.structure.impl.PostingsListImpl;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 /**
  * Clase abstracta IndexImpl encargada del indice 
@@ -107,5 +110,13 @@ public abstract class IndexImpl extends AbstractIndex{
      */    
     abstract void put(String key, long offset);
 
-    
+    protected void loadPaths(String indexPath) throws FileNotFoundException{
+        
+        this.docPaths = new ArrayList<>();
+        
+        Scanner s = new Scanner(new File(indexPath + File.separator + Config.PATHS_FILE));
+        while (s.hasNext()){
+            this.docPaths.add(s.next());
+        }
+    }
 }

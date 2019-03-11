@@ -151,7 +151,7 @@ public class SerializedRAMIndex extends IndexImpl implements Serializable{
         loadNorms(indexPath);
     }
     
-    void loadPaths(String indexPath){
+    /*void loadPaths(String indexPath){
         //Cargamos los paths de los documentos
         try(ObjectInputStream in= new ObjectInputStream(new FileInputStream(indexPath + File.separator + Config.PATHS_FILE))){
             this.docPaths =  (List<String>) in.readObject();
@@ -159,7 +159,7 @@ public class SerializedRAMIndex extends IndexImpl implements Serializable{
         } catch (IOException|ClassNotFoundException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     /**
      * Funcion sin uso para esta clase

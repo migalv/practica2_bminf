@@ -22,10 +22,12 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 /**
  * Clase DiskIndex encargada del indice en disco combinado con la RAM
@@ -206,12 +208,13 @@ public class DiskIndex extends IndexImpl{
         this.indexPath=indexPath;
         
         //Cargamos los path de los documentos
-        try(ObjectInputStream in= new ObjectInputStream(new FileInputStream(indexPath + File.separator + Config.PATHS_FILE))){
+        /*try(ObjectInputStream in= new ObjectInputStream(new FileInputStream(indexPath + File.separator + Config.PATHS_FILE))){
             this.docPaths =  (List<String>) in.readObject();
             in.close();
         } catch (IOException|ClassNotFoundException e) {
             e.printStackTrace();
-        }
+        }*/
+        loadPaths(indexPath);
         
         // Abrimos el archivo del diccionario
         FileInputStream fDic = new FileInputStream(indexPath + File.separator + Config.DICTIONARY_FILE);

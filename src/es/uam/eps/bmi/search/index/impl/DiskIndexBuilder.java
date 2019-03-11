@@ -18,7 +18,6 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.nio.ByteBuffer;
 import java.util.Map;
 
@@ -88,10 +87,11 @@ public class DiskIndexBuilder extends IndexBuilderImpl {
         ByteBuffer bb;
         
         //Guardamos los paths de los documentos
-        try(ObjectOutputStream out= new ObjectOutputStream(new FileOutputStream(indexPath + File.separator + Config.PATHS_FILE))){
+        /*try(ObjectOutputStream out= new ObjectOutputStream(new FileOutputStream(indexPath + File.separator + Config.PATHS_FILE))){
             out.writeObject(paths); 
             out.close();
-        }
+        }*/
+        writePaths();
         
         //Guardamos en un fichero el diccionario dato a dato
         FileOutputStream fDic = new FileOutputStream(indexPath + File.separator + Config.DICTIONARY_FILE);
@@ -134,6 +134,4 @@ public class DiskIndexBuilder extends IndexBuilderImpl {
         }
         dictionary.clear();
     }
-
-
 }

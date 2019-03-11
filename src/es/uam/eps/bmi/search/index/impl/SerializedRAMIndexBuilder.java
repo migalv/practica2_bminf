@@ -60,7 +60,9 @@ public class SerializedRAMIndexBuilder extends IndexBuilderImpl{
         
         //Guardamos el indice 
         this.saveDictionary(dictionary,indexPath);
-        this.savePaths(indexPath);
+        
+        writePaths();
+        //this.savePaths(indexPath);
         //Seguidamente lo cargamos para poder trabajar con el
         //index.loadIndex(indexPath);
 

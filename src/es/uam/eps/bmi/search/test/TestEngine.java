@@ -38,10 +38,10 @@ public class TestEngine {
         String baseIndexPath = "index/urls";
 
         // Construcción
-        new LuceneForwardIndexBuilder().build(collPath, baseIndexPath + "/lucene/forward");
-        new LuceneBuilder().build(collPath, baseIndexPath + "/lucene");
-        new SerializedRAMIndexBuilder().build(collPath, baseIndexPath + "/ram");
-        new DiskIndexBuilder().build(collPath, baseIndexPath + "/disk");
+        //new LuceneForwardIndexBuilder().build(collPath, baseIndexPath + "/lucene/forward");
+        //new LuceneBuilder().build(collPath, baseIndexPath + "/lucene");
+        //new SerializedRAMIndexBuilder().build(collPath, baseIndexPath + "/ram");
+        //new DiskIndexBuilder().build(collPath, baseIndexPath + "/disk");
         
         // Excepción
         try {
@@ -53,16 +53,16 @@ public class TestEngine {
         // Inspección
         System.out.println("-----------------------");
         System.out.println("Checking index correction on URL collection");
-        testIndex(new LuceneForwardIndex(baseIndexPath + "/lucene/forward"), "information");
-        testIndex(new LuceneIndex(baseIndexPath + "/lucene"), "information");
-        testIndex(new SerializedRAMIndex(baseIndexPath + "/ram"), "information");
-        testIndex(new DiskIndex(baseIndexPath + "/disk"), "information");
+        //testIndex(new LuceneForwardIndex(baseIndexPath + "/lucene/forward"), "information");
+        //testIndex(new LuceneIndex(baseIndexPath + "/lucene"), "information");
+        //testIndex(new SerializedRAMIndex(baseIndexPath + "/ram"), "information");
+        //testIndex(new DiskIndex(baseIndexPath + "/disk"), "information");
 
         /////////////////////////////////////
         // Índices: pruebas de rendimiento //
         /////////////////////////////////////
         
-        testIndexPerformance("1k", "collections/docs1k.zip", "index/1k");
+        //testIndexPerformance("1k", "collections/docs1k.zip", "index/1k");
         //testIndexPerformance("10k", "collections/docs10k.zip", "index/10k");
         //testIndexPerformance("100k", "collections/docs100k.zip", "index/100k");
 
@@ -72,30 +72,30 @@ public class TestEngine {
 
         System.out.println("-----------------------");
         System.out.println("Checking engine results on URL collection");
-        String query = "information probability";
-        Index luceneFwdIndex = new LuceneForwardIndex(baseIndexPath + "/lucene/forward");
-        Index luceneIndex = new LuceneIndex(baseIndexPath + "/lucene");
-        Index ramIndex = new SerializedRAMIndex(baseIndexPath + "/ram");
-        Index diskIndex = new DiskIndex(baseIndexPath + "/disk");
+        //String query = "information probability";
+        //Index luceneFwdIndex = new LuceneForwardIndex(baseIndexPath + "/lucene/forward");
+        //Index luceneIndex = new LuceneIndex(baseIndexPath + "/lucene");
+        //Index ramIndex = new SerializedRAMIndex(baseIndexPath + "/ram");
+        //Index diskIndex = new DiskIndex(baseIndexPath + "/disk");
         
-        testSearch(new LuceneEngine(baseIndexPath + "/lucene"), query, 5);
-        testSearch(new SlowVSMEngine(luceneFwdIndex), query, 5);
+        //testSearch(new LuceneEngine(baseIndexPath + "/lucene"), query, 5);
+        //testSearch(new SlowVSMEngine(luceneFwdIndex), query, 5);
         
-        testSearch(new TermBasedVSMEngine(luceneIndex), query, 5);
-        testSearch(new TermBasedVSMEngine(ramIndex), query, 5);
-        testSearch(new TermBasedVSMEngine(diskIndex), query, 5);
+        //testSearch(new TermBasedVSMEngine(luceneIndex), query, 5);
+        //testSearch(new TermBasedVSMEngine(ramIndex), query, 5);
+        //testSearch(new TermBasedVSMEngine(diskIndex), query, 5);
 
-        testSearch(new DocBasedVSMEngine(luceneIndex), query, 5);
-        testSearch(new DocBasedVSMEngine(ramIndex), query, 5);
-        testSearch(new DocBasedVSMEngine(diskIndex), query, 5);
+        //testSearch(new DocBasedVSMEngine(luceneIndex), query, 5);
+        //testSearch(new DocBasedVSMEngine(ramIndex), query, 5);
+        //testSearch(new DocBasedVSMEngine(diskIndex), query, 5);
        
         //////////////////////////////////////
         // Búsqueda: pruebas de rendimiento //
         //////////////////////////////////////
 
-        testSearchPerformance("1k", "index/1k", "obama family tree", 5);
+        //testSearchPerformance("1k", "index/1k", "obama family tree", 5);
         //testSearchPerformance("10k", "index/10k", "air tavel information", 5);
-        //testSearchPerformance("100k", "index/100k", "living in india", 5);
+        testSearchPerformance("100k", "index/100k", "living in india", 5);
     }
     
     static void testIndex(Index index, String word) throws IOException {
