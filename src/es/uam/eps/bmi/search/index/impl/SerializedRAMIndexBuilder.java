@@ -14,7 +14,6 @@ import es.uam.eps.bmi.search.index.Index;
 import es.uam.eps.bmi.search.index.NoIndexException;
 import es.uam.eps.bmi.search.index.structure.impl.PostingsListImpl;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -62,27 +61,22 @@ public class SerializedRAMIndexBuilder extends IndexBuilderImpl{
         this.saveDictionary(dictionary,indexPath);
         
         writePaths();
-        //this.savePaths(indexPath);
-        //Seguidamente lo cargamos para poder trabajar con el
-        //index.loadIndex(indexPath);
 
         //Finalmente guardamos las norms de cada termino en disco
         saveDocNorms(indexPath);
         
     }
     
+    /**
+     * Funcion para crear y recuperar un nuevo index.
+     * 
+     * @return Index El nuevo indice.
+     * 
+     * @throws IOException 
+     */
+    @Override
     public Index getCoreIndex() throws IOException {
         return new SerializedRAMIndex(indexPath, dictionary, paths);
-    }
-
-    private void savePaths(String indexPath) throws FileNotFoundException, IOException{
-        //Guardamos los paths
-        try(ObjectOutputStream out= new ObjectOutputStream(new FileOutputStream(indexPath + File.separator + Config.PATHS_FILE))){
-            // Posible perdida de tiempo
-            // Probar a escribirlo a mano
-            out.writeObject(paths); 
-            out.close();
-        }
     }
     
     /**

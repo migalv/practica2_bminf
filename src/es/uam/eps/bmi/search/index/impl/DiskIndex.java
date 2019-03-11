@@ -19,15 +19,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 
 /**
  * Clase DiskIndex encargada del indice en disco combinado con la RAM
@@ -98,14 +94,19 @@ public class DiskIndex extends IndexImpl{
         // Tamaño en Bytes de un posting
         int postingSize = Integer.BYTES + Long.BYTES;
         int j;
+        // Wrapper para trabajar con los bytes
         ByteBuffer wrapped;
         
+        // Abrimos un archivo para leer el archivo de postings
         RandomAccessFile postingFile = new RandomAccessFile(indexPath + File.separator + Config.POSTINGS_FILE, "r");
+        // Nos colocamos en el offset donde empiezan los postings del termino
         postingFile.seek(offset);
-        
+        // Tamaño en bytes
         int postingsBytes = 0;
         
+        // Leemos el numero de postings
         numPostings = postingFile.readInt();
+        // Calculamos el tamaño en bytes de un posting
         postingsBytes = Integer.BYTES * numPostings + Long.BYTES * numPostings;
         
         // Leemos la lista de postings del archivo y nos la traemos a RAM
@@ -115,41 +116,26 @@ public class DiskIndex extends IndexImpl{
         // Creamos a lista de postings apartir de los bytes leidos
         for(int i = 0; i < numPostings; i++){
             byte[] arr = new byte[Integer.BYTES];
+            // Leemos el docID en bytes
             for(j = 0; j < Integer.BYTES; j++){
                 arr[j] = buffer[(i*postingSize)+j];
             }
+            // Transformamos los bytes en integer
             wrapped = ByteBuffer.wrap(arr);
             docID = wrapped.getInt();
             
+            // Leemos la frecuencia en bytes
             arr = new byte[Long.BYTES];
             for(j = Integer.BYTES; j < Long.BYTES + Integer.BYTES; j++){
                 arr[j - Integer.BYTES] = buffer[(i*postingSize)+j];
             }
+            // Transformamos los bytes en long
             wrapped = ByteBuffer.wrap(arr);
             freq = wrapped.getLong();
             
+            // Añadimos el posting a la lista de postings.
             postingsList.addNewPosting(new Posting(docID, freq));
         }
-        
-        /*try ( //Guardamos en un fichero el diccionario dato a dato
-            FileInputStream fPost = new FileInputStream(indexPath + File.separator + Config.POSTINGS_FILE)) {
-            //Nos situamos en la posicion del fichero donde se encuentran la lista de postings del termino
-            fPost.skip(offset);
-            
-            //Leemos la lista de postings:
-            //El primer dato a leer es el numero de postings del termino
-            //El segundo dato a a leer es el docID
-            //El ultimo dato a leer es la frecuencia del termino en el docID actual
-            //Finalmente lo añadimos a lista de postings
-            try (DataInputStream inPost = new DataInputStream(fPost)) {
-                numPostings = inPost.readInt();
-                for(int i = 0; i < numPostings; i++){
-                    docID = inPost.readInt();
-                    freq = inPost.readLong();
-                    postingsList.addNewPosting(new Posting(docID, freq));
-                }
-            }
-        }*/
         
         return postingsList;
     }
@@ -208,12 +194,6 @@ public class DiskIndex extends IndexImpl{
         this.indexPath=indexPath;
         
         //Cargamos los path de los documentos
-        /*try(ObjectInputStream in= new ObjectInputStream(new FileInputStream(indexPath + File.separator + Config.PATHS_FILE))){
-            this.docPaths =  (List<String>) in.readObject();
-            in.close();
-        } catch (IOException|ClassNotFoundException e) {
-            e.printStackTrace();
-        }*/
         loadPaths(indexPath);
         
         // Abrimos el archivo del diccionario

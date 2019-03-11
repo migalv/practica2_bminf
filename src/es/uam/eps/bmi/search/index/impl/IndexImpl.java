@@ -110,6 +110,14 @@ public abstract class IndexImpl extends AbstractIndex{
      */    
     abstract void put(String key, long offset);
 
+    /**
+     * Funcion para cargar los paths de los documentos a memoria
+     * 
+     * 
+     * @param indexPath la ruta donde se encuentra el indice
+     * 
+     * @throws FileNotFoundException
+     */
     protected void loadPaths(String indexPath) throws FileNotFoundException{
         
         this.docPaths = new ArrayList<>();

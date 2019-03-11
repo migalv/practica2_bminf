@@ -18,7 +18,6 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.Map;
 
 /**
@@ -67,6 +66,14 @@ public class DiskIndexBuilder extends IndexBuilderImpl {
         
     }
     
+    /**
+     * Funcion para crear y recuperar un nuevo index.
+     * 
+     * @return Index El nuevo indice.
+     * 
+     * @throws IOException 
+     */
+    @Override
     public Index getCoreIndex() throws IOException {
         return new DiskIndex(indexPath);
     }
@@ -84,13 +91,8 @@ public class DiskIndexBuilder extends IndexBuilderImpl {
     public void saveDictionary(Map<String, PostingsListImpl> dictionary, String indexPath) throws IOException {        
         //Inicializamos la ruta del indice
         this.indexPath = indexPath;
-        ByteBuffer bb;
         
         //Guardamos los paths de los documentos
-        /*try(ObjectOutputStream out= new ObjectOutputStream(new FileOutputStream(indexPath + File.separator + Config.PATHS_FILE))){
-            out.writeObject(paths); 
-            out.close();
-        }*/
         writePaths();
         
         //Guardamos en un fichero el diccionario dato a dato
@@ -125,9 +127,6 @@ public class DiskIndexBuilder extends IndexBuilderImpl {
                 // Escribimos el offset en el fichero del diccionario
                 long offset = outPost.size() - postingBytes;
                 outDic.writeLong(offset);
-                
-                //Finalmente insertamos en el mapa de terminos el termino y el offset
-                //this.index.put(entry.getKey(), offset);
             }
             outDic.close();
             outPost.close();

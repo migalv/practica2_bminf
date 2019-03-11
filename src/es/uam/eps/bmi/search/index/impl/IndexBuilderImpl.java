@@ -113,6 +113,12 @@ public abstract class IndexBuilderImpl  extends AbstractIndexBuilder{
      */
     abstract void saveDictionary(Map<String, PostingsListImpl> dictionary, String indexPath) throws IOException;
 
+    /**
+     * Funcion común que se encarga de escribir los paths de los archivos a un 
+     * archivo.
+     * 
+     * @throws IOException 
+     */
     protected void writePaths() throws FileNotFoundException, IOException{
         
         try (FileOutputStream outputStream = new FileOutputStream(indexPath + File.separator + Config.PATHS_FILE)) {
