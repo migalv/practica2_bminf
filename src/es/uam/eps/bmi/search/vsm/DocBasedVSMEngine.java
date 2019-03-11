@@ -15,8 +15,10 @@ import es.uam.eps.bmi.search.index.structure.PostingsList;
 import es.uam.eps.bmi.search.ranking.SearchRanking;
 import es.uam.eps.bmi.search.ranking.impl.RankingImpl;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.logging.Level;
@@ -61,7 +63,10 @@ public class DocBasedVSMEngine extends AbstractVSMEngine {
         String queryTerms[] = parse(query);
         int numDocs = index.numDocs();
         RankingImpl ranking = new RankingImpl(index, cutoff);
-        PostingsList termPostingsList = null;
+        // Usamos un HashMap para relacionar un queryTerm con su lista de postings
+        // Así tenemos guardada la lista de postings para no tener que leerla de
+        // disco a cada vez.
+        Map<String, PostingsList> termPostingsList = new HashMap<>();
         
         if(queryTerms.length < 0){
             return ranking;
@@ -75,11 +80,10 @@ public class DocBasedVSMEngine extends AbstractVSMEngine {
         // Recuperamos la listas de postings para cada termino de la query
         for(String queryTerm : queryTerms){
             termFreq= index.getDocFreq(queryTerm);
-            termPostingsList = index.getPostings(queryTerm);
-            Iterator<Posting> postingIterator = termPostingsList.iterator();
-
             //Solo añadimos si esta presente en el indice
             if(termFreq > 0){
+                termPostingsList.put(queryTerm, index.getPostings(queryTerm));
+                Iterator<Posting> postingIterator = termPostingsList.get(queryTerm).iterator();
                 postingsHeap.add(new HeapPosting(postingIterator.next(),postingIterator,queryTerm));
             }
         }
@@ -97,7 +101,7 @@ public class DocBasedVSMEngine extends AbstractVSMEngine {
             String queryTerm= hp.getQueryTerm();
             
             // Calculamos el tfidf
-            double tfidf = tfidf(freq, termPostingsList.size(), numDocs);
+            double tfidf = tfidf(freq, termPostingsList.get(queryTerm).size(), numDocs);
             
             // Si el docID ya está en los acumuladores le sumamos el score
             if(acumuladores.containsKey(docID)){
