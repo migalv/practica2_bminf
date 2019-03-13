@@ -1,0 +1,23 @@
+Para la implementación del EfficientIndexBuilder hemos optado por limitar el número de documentos que leemos a RAM a 1000 documentos,
+utilizando así una cantidad menor de RAM. A la hora de crear lo indices parciales hemos decidido crear diccionarios parciales de pares
+ (Término/Lista de postings) donde las tuplas están ordenadas alfabéticamente por termino, cada diccionario tiene su propio archivo de
+par (Término/Lista de postings) ordenado. 
+
+Una vez creados los diccionarios parciales utilizamos la función k-merge, que se encarga de juntar los diccionarios parciales en uno, creando
+así un indice final único. Para ésta tarea utilizamos un k-Heap, donde la k es igual al número de diccionarios parciales que tenemos. 
+Hemos optado por realizar un procesamiento cosecuencial, iterando de forma coordinada sobre todos los archivos de los diccionarios parciales.
+Para ello hemos implementado un clase llamada HeapTPL, que nos permite tener almacenada cierta información relevante para hacer el merge. 
+En ella se almacena el par (Termino/Lista de postings), el cual llamamos TPL, de ahí el nombre HeapTPL. También almacenamos el puntero
+al stream de datos (el archivo del diccionario parcial) del cual proviene TPL, para así posteriormente, cuando saquemos el HeapTPL del kHeap
+podamos saber de que archivo hay que leer el siguiente TPL. Además de un indice que nos permite saber en que orden fueron 
+creados los diccionarios parciales, para así, en caso de que dos elementos del kHeap tengan un termino identico, se puedan ordenar por
+orden de escritura en los diccionarios parciales, consiguiendo así que las listas de postings estén ordenadas por Doc id también, para 
+conseguir esto, la clase debe implementar la interfaz Comparable, para así poder ordenarse dentro del kHeap.
+
+A continuación mostramos los resultados obtenidos por esta nueva implementación.
+
+Como se puede comprobar la nueva implementación del builder no gasta más de 1GB de RAM. También se puede observar que tarda bastante más
+que el resto de implementaciones, a cambio de un gasto menor de RAM. 
+
+Se constata que la velocidad de carga es la misma que el de DiskIndex, eso es debido a que esta implementación es compatible con el mismo,
+y en los test se ha útilizado éste.

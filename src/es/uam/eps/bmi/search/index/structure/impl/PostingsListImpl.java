@@ -59,6 +59,10 @@ public class PostingsListImpl implements PostingsList, Serializable {
             postings.add(new Posting(docID, 1));
         }
     }
+    
+    public List<Posting> getPostingsList(){
+        return this.postings;
+    }
 
     /**
      * Devuelve el numero de postings 

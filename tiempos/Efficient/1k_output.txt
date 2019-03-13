@@ -1,0 +1,11 @@
+No index in here
+-----------------------
+Testing index performance on 1k document collection
+  Build time...
+	DiskIndex:	1min 23s 801ms 
+  Load time...
+	DiskIndex:	1s 971ms 
+  Disk space...
+	DiskIndex:	9450K
+
+MAX RAM -> 456MB

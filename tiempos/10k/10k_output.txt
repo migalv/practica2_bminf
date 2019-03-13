@@ -1,0 +1,16 @@
+Testing index performance on 10k document collection
+  Build time...
+	LuceneForwardIndex	30s 291ms 
+	LuceneIndex	24s 762ms 
+	RAMIndex	1min 28s 182ms 
+	DiskIndex	3min 55s 593ms 
+  Load time...
+	LuceneForwardIndex	53ms 
+	LuceneIndex	20ms 
+	RAMIndex	1min 434ms 
+	DiskIndex	5s 948ms 
+  Disk space...
+	LuceneForwardIndex	37051K
+	LuceneIndex	12989K
+	RAMIndex	93080K
+	DiskIndex	62804K

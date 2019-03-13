@@ -1,0 +1,17 @@
+LuceneForwardIndex:	4min 35s 453ms 
+	LuceneIndex:	3min 52s 900ms 
+	RAMIndex:	13min 59s 480ms 
+	DiskIndex:	31min 57s 192ms 
+  Load time...
+	LuceneForwardIndex:	189ms 
+	LuceneIndex:	134ms 
+	RAMIndex:	9min 55s 872ms 
+	DiskIndex:	25s 850ms 
+  Disk space...
+	LuceneForwardIndex:	380847K
+	LuceneIndex:	123334K
+	RAMIndex:	941492K
+	DiskIndex:	633392K
+
+
+MAX RAM: 3,6 GB

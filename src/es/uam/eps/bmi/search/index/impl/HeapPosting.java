@@ -7,7 +7,7 @@
  * 
  * Created on 23/02/2019  
  */
-package es.uam.eps.bmi.search.vsm;
+package es.uam.eps.bmi.search.index.impl;
 
 import es.uam.eps.bmi.search.index.structure.Posting;
 import java.util.Iterator;
